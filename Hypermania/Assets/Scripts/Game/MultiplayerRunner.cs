@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using Design;
 using Game.Sim;
 using Netcode.P2P;
 using Netcode.Rollback;
@@ -19,6 +20,8 @@ namespace Game
         private uint _waitRemaining;
         private PlayerHandle _myHandle;
         private float _time;
+        private CharacterConfig[] _characters;
+        private InputBuffer _inputBuffer;
 
         void OnEnable()
         {
@@ -28,6 +31,8 @@ namespace Game
             _curState = null;
             _myHandle = new PlayerHandle(-1);
             _time = 0;
+            _characters = null;
+            _inputBuffer = null;
         }
 
         void OnDisable()
@@ -38,11 +43,17 @@ namespace Game
             _curState = null;
             _myHandle = new PlayerHandle(-1);
             _time = 0;
+            _characters = null;
+            _inputBuffer = null;
         }
 
         public override void Init(List<(PlayerHandle playerHandle, PlayerKind playerKind, SteamNetworkingIdentity address)> players, P2PClient client)
         {
-            _curState = GameState.New();
+            // TODO: take in character selections from matchmaking/lobby
+            CharacterConfig sampleConfig = _characterConfigs.Get(Character.SampleFighter);
+            _characters = new CharacterConfig[2] { sampleConfig, sampleConfig };
+
+            _curState = GameState.Create(_characters);
             SessionBuilder<GameInput, SteamNetworkingIdentity> builder = new SessionBuilder<GameInput, SteamNetworkingIdentity>().WithNumPlayers(players.Count).WithFps(64);
             foreach ((PlayerHandle playerHandle, PlayerKind playerKind, SteamNetworkingIdentity address) in players)
             {
@@ -50,6 +61,8 @@ namespace Game
                 builder.AddPlayer(new PlayerType<SteamNetworkingIdentity> { Kind = playerKind, Address = address }, playerHandle);
             }
             _session = builder.StartP2PSession<GameState>(client);
+            _inputBuffer = new InputBuffer();
+            _view.Init(_characters);
             _initialized = true;
 
             if (_myHandle.Id == -1)
@@ -63,6 +76,8 @@ namespace Game
         public override void Poll(float deltaTime)
         {
             if (!_initialized) { return; }
+
+            _inputBuffer.Saturate();
 
             _session.PollRemoteClients();
 
@@ -104,16 +119,8 @@ namespace Game
                 return;
             }
 
-            InputFlags f1Input = InputFlags.None;
-            if (Input.GetKey(KeyCode.A))
-                f1Input |= InputFlags.Left;
-            if (Input.GetKey(KeyCode.D))
-                f1Input |= InputFlags.Right;
-            if (Input.GetKey(KeyCode.W))
-                f1Input |= InputFlags.Up;
+            _session.AddLocalInput(_myHandle, _inputBuffer.Consume());
 
-
-            _session.AddLocalInput(_myHandle, new GameInput(f1Input));
             try
             {
                 List<RollbackRequest<GameState, GameInput>> requests = _session.AdvanceFrame();
@@ -130,7 +137,7 @@ namespace Game
                             loadReq.Cell.Load(out _curState);
                             break;
                         case RollbackRequestKind.AdvanceFrameReq:
-                            _curState.Advance(request.GetAdvanceFrameRequest().Inputs);
+                            _curState.Advance(request.GetAdvanceFrameRequest().Inputs, _characters);
                             break;
                     }
                 }

@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using Design;
 using MemoryPack;
 using Netcode.Rollback;
 using UnityEngine;
@@ -15,33 +16,38 @@ namespace Game.Sim
         // public HitboxState[] Hitboxes;     
         // public ProjectileState[] Projectiles; 
 
-        public GameState()
+        /// <summary>
+        /// Use this static builder instead of the constructor for creating new GameStates. This is because MemoryPack, which we use to serialize
+        /// the GameState, places some funky restrictions on the constructor's paratmeter list.
+        /// </summary>
+        /// <param name="characterConfigs">Character configs to use</param>
+        /// <returns>The created GameState</returns>
+        public static GameState Create(CharacterConfig[] characters)
         {
-            Frame = Frame.NullFrame;
-            Fighters = new FighterState[2];
-        }
-
-        public static GameState New()
-        {
+            if (characters.Length != 2)
+            {
+                throw new InvalidOperationException("Must be two characters in a game state");
+            }
             GameState state = new GameState();
             state.Frame = Frame.FirstFrame;
-            state.Fighters[0] = new FighterState(new Vector2(-7, -4.5f), 7f, Vector2.right);
-            state.Fighters[1] = new FighterState(new Vector2(7, -4.5f), 7f, Vector2.left);
+            state.Fighters = new FighterState[2];
+            state.Fighters[0] = FighterState.Create(new Vector2(-7, -4.5f), Vector2.right, characters[0]);
+            state.Fighters[1] = FighterState.Create(new Vector2(7, -4.5f), Vector2.left, characters[1]);
             return state;
         }
 
-        public void Advance((GameInput input, InputStatus status)[] inputs)
+        public void Advance((GameInput input, InputStatus status)[] inputs, CharacterConfig[] characters)
         {
             Frame += 1;
 
             for (int i = 0; i < inputs.Length && i < Fighters.Length; i++)
             {
-                Fighters[i].ApplyMovementIntent(inputs[i].input);
+                Fighters[i].ApplyMovementIntent(Frame, inputs[i].input, characters[i]);
             }
 
             for (int i = 0; i < inputs.Length && i < Fighters.Length; i++)
             {
-                Fighters[i].UpdatePosition();
+                Fighters[i].UpdatePosition(Frame);
             }
 
             // UpdateBoxes();
@@ -56,7 +62,7 @@ namespace Game.Sim
 
             for (int i = 0; i < inputs.Length && i < Fighters.Length; i++)
             {
-                Fighters[i].TickStateMachine();
+                Fighters[i].TickStateMachine(Frame);
             }
         }
 

@@ -3,7 +3,7 @@ using Steamworks;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editors
+namespace Game.Editors
 {
     [CustomEditor(typeof(GameManager))]
     public sealed class GameManagerEditor : Editor

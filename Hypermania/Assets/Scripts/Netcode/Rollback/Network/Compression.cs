@@ -10,7 +10,6 @@ namespace Netcode.Rollback.Network
 
         [ThreadStatic]
         private static byte[] _scratch;
-
         private static byte[] Scratch
         {
             get

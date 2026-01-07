@@ -41,7 +41,8 @@ namespace Game.Sim
         Right = 1 << 4,
         LightAttack = 1 << 5,
         MediumAttack = 1 << 6,
-        HeavyAttack = 1 << 7,
-        Grab = 1 << 8
+        SpecialAttack = 1 << 7,
+        SuperAttack = 1 << 8,
+        Grab = 1 << 9
     }
 }

@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editors.MoveBuilder
+namespace Design.Animation.Editors
 {
     public sealed class MoveBuilderPreviewView : IDisposable
     {
@@ -85,9 +85,9 @@ namespace Editors.MoveBuilder
             if (tex != null)
                 GUI.DrawTexture(rect, tex, ScaleMode.StretchToFill, false);
 
-            DrawHitboxOverlay(rect, model, ref clickConsumed);
+            DrawHitboxOverlay(rect, model);
 
-            HandleBackgroundDeselection(rect, model, ref clickConsumed);
+            HandleBackgroundDeselection(rect, model);
         }
 
         private void EnsurePreviewUtility()
@@ -186,16 +186,11 @@ namespace Editors.MoveBuilder
         private Texture Render(Rect rect, MoveBuilderModel model)
         {
             _preview.BeginPreview(rect, GUIStyle.none);
-
-            if (model.AllowSrp)
-                _preview.Render(allowScriptableRenderPipeline: true);
-            else
-                _preview.Render();
-
+            _preview.Render(allowScriptableRenderPipeline: true);
             return _preview.EndPreview();
         }
 
-        private void DrawHitboxOverlay(Rect rect, MoveBuilderModel model, ref bool clickConsumed)
+        private void DrawHitboxOverlay(Rect rect, MoveBuilderModel model)
         {
             var frame = model.GetCurrentFrame();
             if (frame == null) return;
@@ -217,10 +212,10 @@ namespace Editors.MoveBuilder
                 GUI.Label(new Rect(guiRect.xMin, guiRect.yMin - 16, 180, 16),
                     $"{i}:{box.Props.Kind}", EditorStyles.whiteMiniLabel);
 
-                HandleBoxDrag(rect, model, frame, i, guiRect, root, cam, ref clickConsumed);
-                if (model.ShowResizeHandles && i == model.SelectedBoxIndex)
+                HandleBoxDrag(rect, model, frame, i, guiRect, root, cam);
+                if (i == model.SelectedBoxIndex)
                 {
-                    HandleResizeHandles(rect, model, i, guiRect, root, cam, ref clickConsumed);
+                    HandleResizeHandles(rect, model, i, guiRect, root, cam);
                 }
             }
 
@@ -234,14 +229,13 @@ namespace Editors.MoveBuilder
             int index,
             Rect guiRect,
             Transform root,
-            Camera cam,
-            ref bool clickConsumed)
+            Camera cam)
         {
             var e = Event.current;
             if (e == null) return;
             if (!rect.Contains(e.mousePosition)) return;
 
-            if (e.type == EventType.MouseDown && e.button == 0 && guiRect.Contains(e.mousePosition) && !clickConsumed)
+            if (e.type == EventType.MouseDown && e.button == 0 && guiRect.Contains(e.mousePosition))
             {
                 model.SelectBox(index);
 
@@ -251,7 +245,6 @@ namespace Editors.MoveBuilder
                 _dragStartCenterLocal = frame.Boxes[index].CenterLocal;
 
                 e.Use();
-                clickConsumed = true;
                 return;
             }
 
@@ -278,8 +271,7 @@ namespace Editors.MoveBuilder
             int index,
             Rect guiRect,
             Transform root,
-            Camera cam,
-            ref bool clickConsumed)
+            Camera cam)
         {
             var e = Event.current;
             if (e == null) return;
@@ -301,7 +293,7 @@ namespace Editors.MoveBuilder
             DrawHandle(rNE); DrawHandle(rNW); DrawHandle(rSE); DrawHandle(rSW);
 
             // Mouse down: pick active handle
-            if (!_resizing && e.type == EventType.MouseDown && e.button == 0 && rect.Contains(e.mousePosition) && !clickConsumed)
+            if (!_resizing && e.type == EventType.MouseDown && e.button == 0 && rect.Contains(e.mousePosition))
             {
                 ResizeHandle picked =
                     rNE.Contains(e.mousePosition) ? ResizeHandle.NE :
@@ -325,7 +317,6 @@ namespace Editors.MoveBuilder
                     _resizeStartBox = frame.Boxes[index];
 
                     e.Use();
-                    clickConsumed = true;
                     return;
                 }
             }
@@ -390,22 +381,19 @@ namespace Editors.MoveBuilder
 
         private void HandleBackgroundDeselection(
             Rect rect,
-            MoveBuilderModel model,
-            ref bool clickConsumed)
+            MoveBuilderModel model)
         {
             Event e = Event.current;
             if (e == null) return;
 
             if (e.type == EventType.MouseDown &&
                 e.button == 0 &&
-                rect.Contains(e.mousePosition) &&
-                !clickConsumed)
+                rect.Contains(e.mousePosition))
             {
                 if (model.SelectedBoxIndex != -1)
                 {
                     model.SelectBox(-1);
                 }
-                clickConsumed = true;
                 e.Use();
             }
         }

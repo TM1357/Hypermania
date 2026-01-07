@@ -2,7 +2,7 @@ using Game;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editors.MoveBuilder
+namespace Design.Animation.Editors
 {
     public sealed class MoveBuilderControlsView
     {
@@ -14,24 +14,8 @@ namespace Editors.MoveBuilder
             m.Clip = (AnimationClip)EditorGUILayout.ObjectField(
                 "Animation Clip", m.Clip, typeof(AnimationClip), false);
 
-            m.Data = (MoveBuilderData)EditorGUILayout.ObjectField(
-                "Move Data (Asset)", m.Data, typeof(MoveBuilderData), false);
-
-            m.MaybeAutoBindToClipLength(GameManager.TPS);
-
-            EditorGUILayout.Space(8);
-
-            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
-            {
-                EditorGUILayout.LabelField("View", EditorStyles.boldLabel);
-
-                bool newResize = GUILayout.Toggle(m.ShowResizeHandles, "Resize Handles", "Button");
-                if (newResize != m.ShowResizeHandles)
-                {
-                    m.ShowResizeHandles = newResize;
-                    m.NotifyChanged();
-                }
-            }
+            m.Data = (HitboxData)EditorGUILayout.ObjectField(
+                "Move Data (Asset)", m.Data, typeof(HitboxData), false);
 
             EditorGUILayout.Space(8);
 
@@ -41,15 +25,25 @@ namespace Editors.MoveBuilder
                 return;
             }
 
+            if (GUILayout.Button("Initialize Data")) m.BindDataToClipLength(m, GameManager.TPS);
+            EditorGUILayout.Space(8);
+
             DrawBoxList(m);
             EditorGUILayout.Space(8);
             DrawSelectedBoxInspector(m);
 
             EditorGUILayout.Space(8);
 
-            using (new EditorGUILayout.HorizontalScope())
+            if (m.HasUnsavedChanges)
             {
-                if (GUILayout.Button("Save"))
+                EditorGUILayout.HelpBox(
+                    "You have unsaved changes.",
+                    MessageType.Warning
+                );
+            }
+            using (new EditorGUI.DisabledScope(!m.HasUnsavedChanges))
+            {
+                if (GUILayout.Button(m.HasUnsavedChanges ? "Save *" : "Save"))
                     m.SaveAsset();
             }
         }

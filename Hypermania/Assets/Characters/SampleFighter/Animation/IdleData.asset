@@ -1,0 +1,446 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be373a019aa534843a9f8df3be036a28, type: 3}
+  m_Name: IdleData
+  m_EditorClassIdentifier: 
+  Clip: {fileID: 7400000, guid: 6223e20d304f8472c83606ad1793ea1d, type: 2}
+  Frames:
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0.0049504936, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.000000059604645}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.618812}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.0049505234}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.0049505234}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.0049505234}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.0049505234}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.0049505234}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: -0.0049505234}
+      SizeLocal: {x: 1.0544555, y: 1.6782179}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.6584159}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.6584159}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.6584159}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.6584159}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}
+  - Boxes:
+    - Name: Hurt
+      CenterLocal: {x: 0, y: 0.004950464}
+      SizeLocal: {x: 1.0544555, y: 1.6584159}
+      Props:
+        Kind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        Knockback: {x: 0, y: 0}

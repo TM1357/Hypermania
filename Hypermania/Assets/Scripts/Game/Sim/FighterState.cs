@@ -1,5 +1,6 @@
 using System;
 using System.Buffers.Binary;
+using Design;
 using MemoryPack;
 using UnityEngine;
 using Utils;
@@ -22,14 +23,24 @@ namespace Game.Sim
         Crouched,
     }
 
+    public enum FighterAttackType
+    {
+        Invalid,
+        Light,
+        Medium,
+        Special,
+        Super
+    }
+
     [MemoryPackable]
     public partial struct FighterState
     {
         public Vector2 Position;
         public Vector2 Velocity;
-        public float Speed;
 
-        public FighterMode Mode;
+        public FighterAttackType AttackType;
+        public FighterMode Mode { get; private set; }
+        public Frame ModeSt { get; private set; }
 
         /// <summary>
         /// The number of ticks remaining for the current mode. If the mode is Neutral or another mode that should last indefinitely, you can set 
@@ -54,18 +65,23 @@ namespace Game.Sim
                 return FighterLocation.Grounded;
             }
         }
+        public FighterLocation LastLocation;
+        public Frame LocationSt { get; private set; }
 
-        public FighterState(Vector2 position, float speed, Vector2 facingDirection)
+        public static FighterState Create(Vector2 position, Vector2 facingDirection, CharacterConfig characterConfig)
         {
-            Position = position;
-            Velocity = Vector2.zero;
-            Speed = speed;
-            Mode = FighterMode.Neutral;
-            ModeT = int.MaxValue;
-            FacingDirection = facingDirection;
+            FighterState state = new FighterState();
+            state.Position = position;
+            state.Velocity = Vector2.zero;
+            state.Mode = FighterMode.Neutral;
+            state.ModeSt = Frame.FirstFrame;
+            state.ModeT = int.MaxValue;
+            state.AttackType = FighterAttackType.Invalid;
+            state.FacingDirection = facingDirection;
+            return state;
         }
 
-        public void ApplyMovementIntent(GameInput input)
+        public void ApplyMovementIntent(Frame frame, GameInput input, CharacterConfig characterConfig)
         {
             // Horizontal movement
             switch (Mode)
@@ -74,11 +90,26 @@ namespace Game.Sim
                     {
                         Velocity.x = 0;
                         if (input.Flags.HasFlag(InputFlags.Left))
-                            Velocity.x = -Speed;
+                            Velocity.x = -characterConfig.Speed;
                         if (input.Flags.HasFlag(InputFlags.Right))
-                            Velocity.x = Speed;
+                            Velocity.x = characterConfig.Speed;
                         if (input.Flags.HasFlag(InputFlags.Up) && Location == FighterLocation.Grounded)
-                            Velocity.y = Speed * 1.5f;
+                            Velocity.y = characterConfig.JumpVelocity;
+                        if (input.Flags.HasFlag(InputFlags.LightAttack))
+                        {
+                            switch (Location)
+                            {
+                                case FighterLocation.Grounded:
+                                    {
+                                        Velocity = Vector2.zero;
+                                        Mode = FighterMode.Attacking;
+                                        AttackType = FighterAttackType.Light;
+                                        ModeSt = frame;
+                                        ModeT = characterConfig.LightAttack.TotalTicks;
+                                    }
+                                    break;
+                            }
+                        }
                     }
                     break;
                 case FighterMode.Knockdown:
@@ -89,17 +120,24 @@ namespace Game.Sim
             }
         }
 
-        public void TickStateMachine()
+        public void TickStateMachine(Frame frame)
         {
             ModeT--;
             if (ModeT <= 0)
             {
                 Mode = FighterMode.Neutral;
+                AttackType = FighterAttackType.Invalid;
+                ModeSt = frame;
                 ModeT = int.MaxValue;
+            }
+            if (LastLocation != Location)
+            {
+                LastLocation = Location;
+                LocationSt = frame;
             }
         }
 
-        public void UpdatePosition()
+        public void UpdatePosition(Frame frame)
         {
             // Apply gravity if not grounded
             if (Position.y > Globals.GROUND || Velocity.y > 0)

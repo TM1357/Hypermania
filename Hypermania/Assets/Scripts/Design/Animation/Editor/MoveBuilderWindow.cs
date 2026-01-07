@@ -2,7 +2,7 @@ using Game;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editors.MoveBuilder
+namespace Design.Animation.Editors
 {
     public sealed class MoveBuilderWindow : EditorWindow
     {
@@ -10,7 +10,6 @@ namespace Editors.MoveBuilder
         public static void Open() => GetWindow<MoveBuilderWindow>("Move Builder");
 
         [SerializeField] private MoveBuilderModel _model;
-
         private MoveBuilderControlsView _controls;
         private MoveBuilderPreviewView _preview;
 
@@ -80,10 +79,6 @@ namespace Editors.MoveBuilder
                     m.DeleteSelected();
                     e.Use();
                     break;
-                case KeyCode.R:
-                    m.ToggleResizeHandles();
-                    e.Use();
-                    break;
                 case KeyCode.A:
                     if (e.shift) { m.AddBox(HitboxKind.Hurtbox); }
                     else { m.AddBox(HitboxKind.Hitbox); }
@@ -107,7 +102,10 @@ namespace Editors.MoveBuilder
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                using (new EditorGUILayout.VerticalScope(GUILayout.Width(380)))
+                using (new EditorGUILayout.VerticalScope(new GUIStyle
+                {
+                    padding = new RectOffset(8, 8, 8, 8)
+                }, GUILayout.Width(380)))
                 {
                     _controls.DrawLeft(_model, GameManager.TPS);
                 }

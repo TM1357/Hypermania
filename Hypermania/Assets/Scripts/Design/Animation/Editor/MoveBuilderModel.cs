@@ -2,21 +2,20 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editors.MoveBuilder
+namespace Design.Animation.Editors
 {
     [Serializable]
     public sealed class MoveBuilderModel
     {
         public GameObject CharacterPrefab;
         public AnimationClip Clip;
-        public MoveBuilderData Data;
+        public HitboxData Data;
 
         public int CurrentTick;
         public int SelectedBoxIndex = -1;
+        private bool _hasUnsavedChanges;
 
-        public bool ShowResizeHandles = true;
-        public bool AllowSrp = true;
-
+        public bool HasUnsavedChanges => _hasUnsavedChanges;
 
         public event Action Changed;
 
@@ -25,10 +24,8 @@ namespace Editors.MoveBuilder
 
         public float CurrentTimeSeconds(int tps) => CurrentTick / (float)Mathf.Max(1, tps);
 
-        public void NotifyChanged() => Changed?.Invoke();
-
-        #region DataBinding
-        public void BindDataToClipLength(int tps)
+        #region Data Binding
+        public void BindDataToClipLength(MoveBuilderModel model, int tps)
         {
             if (!Data || !Clip) return;
 
@@ -42,17 +39,16 @@ namespace Editors.MoveBuilder
             SelectedBoxIndex = Mathf.Clamp(SelectedBoxIndex, -1, GetCurrentFrame()?.Boxes.Count - 1 ?? -1);
 
             MarkDirty();
-            AssetDatabase.SaveAssets();
-            NotifyChanged();
+            model.SaveAsset();
         }
+        #endregion
 
+        #region Modifications
         public void SetTick(int tick)
         {
             if (!Data)
                 return;
-
             CurrentTick = Mathf.Clamp(tick, 0, TotalTicks - 1);
-            NotifyChanged();
         }
 
         public FrameData GetCurrentFrame()
@@ -61,32 +57,11 @@ namespace Editors.MoveBuilder
             return Data.GetFrame(CurrentTick);
         }
 
-        private int _lastBoundDataId;
-        private int _lastBoundClipId;
-        public void MaybeAutoBindToClipLength(int tps)
-        {
-            if (!Data || !Clip) return;
-
-            int dataId = Data.GetInstanceID();
-            int clipId = Clip.GetInstanceID();
-
-            if (_lastBoundDataId == dataId && _lastBoundClipId == clipId)
-                return;
-
-            _lastBoundDataId = dataId;
-            _lastBoundClipId = clipId;
-
-            BindDataToClipLength(tps);
-        }
-        #endregion
-
-        #region Modifications
         public void SelectBox(int index)
         {
             var frame = GetCurrentFrame();
             int max = frame != null ? frame.Boxes.Count - 1 : -1;
             SelectedBoxIndex = Mathf.Clamp(index, -1, max);
-            NotifyChanged();
         }
 
         public void AddBox(HitboxKind kind)
@@ -112,7 +87,6 @@ namespace Editors.MoveBuilder
             SelectedBoxIndex = frame.Boxes.Count - 1;
 
             MarkDirty();
-            NotifyChanged();
         }
 
         public void DuplicateSelected()
@@ -130,7 +104,6 @@ namespace Editors.MoveBuilder
             SelectedBoxIndex = frame.Boxes.Count - 1;
 
             MarkDirty();
-            NotifyChanged();
         }
 
         public void DeleteSelected()
@@ -145,7 +118,6 @@ namespace Editors.MoveBuilder
             SelectedBoxIndex = -1;
 
             MarkDirty();
-            NotifyChanged();
         }
 
         public void MoveBoxCenter(int index, Vector2 newCenterLocal)
@@ -154,14 +126,15 @@ namespace Editors.MoveBuilder
             if (frame == null) return;
             if (index < 0 || index >= frame.Boxes.Count) return;
 
+            var b = frame.Boxes[index];
+            if (b.CenterLocal == newCenterLocal) return;
+
             RecordUndo("Move Box");
 
-            var b = frame.Boxes[index];
             b.CenterLocal = newCenterLocal;
             frame.Boxes[index] = b;
 
             MarkDirty();
-            NotifyChanged();
         }
 
         public void SetBox(int index, BoxData updated)
@@ -170,18 +143,14 @@ namespace Editors.MoveBuilder
             if (frame == null) return;
             if (index < 0 || index >= frame.Boxes.Count) return;
 
+            var cur = frame.Boxes[index];
+            if (cur == updated) return; 
+
             RecordUndo("Edit Box");
 
             frame.Boxes[index] = updated;
 
             MarkDirty();
-            NotifyChanged();
-        }
-
-        public void ToggleResizeHandles()
-        {
-            ShowResizeHandles = !ShowResizeHandles;
-            NotifyChanged();
         }
 
         public void SetBoxesFromPreviousFrame()
@@ -216,7 +185,6 @@ namespace Editors.MoveBuilder
             if (cur.Boxes.Count == 0) SelectedBoxIndex = -1;
 
             MarkDirty();
-            NotifyChanged();
         }
         #endregion
 
@@ -224,19 +192,19 @@ namespace Editors.MoveBuilder
         public void SaveAsset()
         {
             if (!Data) return;
-            MarkDirty();
+
+            EditorUtility.SetDirty(Data);
             AssetDatabase.SaveAssets();
-        }
 
-        public string ExportJson(bool pretty)
-        {
-            if (!Data) return "{}";
-            return Data.ToJson(pretty);
+            _hasUnsavedChanges = false;
         }
-
         private void MarkDirty()
         {
-            if (Data) EditorUtility.SetDirty(Data);
+            if (Data)
+            {
+                EditorUtility.SetDirty(Data);
+                _hasUnsavedChanges = true;
+            }
         }
 
         private void RecordUndo(string label)
