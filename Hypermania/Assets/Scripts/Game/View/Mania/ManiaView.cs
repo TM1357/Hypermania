@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Game.Sim;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Utils;
 
-namespace Game.View
+namespace Game.View.Mania
 {
     [Serializable]
     public struct ManiaViewConfig
@@ -81,7 +79,7 @@ namespace Game.View
 
             for (int i = 0; i < state.Channels.Length; i++)
             {
-                Config.Inputs[i].gameObject.GetComponent<SpriteSwitcher>().ChangeSprite(state.Channels[i].pressed);
+                Config.Inputs[i].gameObject.GetComponent<ManiaSpriteSwitcher>().ChangeSprite(state.Channels[i].pressed);
             }
 
             for (int i = 0; i < state.Config.NumKeys; i++)
