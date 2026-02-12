@@ -96,6 +96,7 @@ namespace Game.View
 
         public void ApplyShake(Frame currentFrame)
         {
+            //gathering shakes queued up in window
             float totalIntensity = 0f;
 
             foreach (var shake in _curShakes)
@@ -108,7 +109,7 @@ namespace Game.View
                     totalIntensity += shake.Intensity * t;
                 }
             }
-
+            //calculating shakeOffset
             if (totalIntensity > 0f)
             {
                 _shakeOffset = GetDeterministicShake(currentFrame) * totalIntensity * _shakeScale;
@@ -121,6 +122,7 @@ namespace Game.View
 
         private Vector3 GetDeterministicShake(Frame frame)
         {
+            //seeding shake based on frame no
             int seed = frame.No;
             float x = Mathf.Sin(seed * 12.9898f) * 43758.5453f;
             float y = Mathf.Sin(seed * 78.233f) * 12345.6789f;
@@ -159,7 +161,7 @@ namespace Game.View
             Vector3 p = transform.position;
             min.y = max.y - 2 * _camera.orthographicSize;
             Vector2 pos2 = Vector2.Lerp(new Vector2(p.x, p.y), (min + max) / 2, a);
-
+            pos2 += (Vector2)_shakeOffset;
             float halfHeight = _camera.orthographicSize;
             float halfWidth = _camera.orthographicSize * _camera.aspect;
 
@@ -176,7 +178,8 @@ namespace Game.View
 
             pos2.x = Mathf.Clamp(pos2.x, minX, maxX);
             pos2.y = Mathf.Clamp(pos2.y, minY, maxY);
-            transform.position = new Vector3(pos2.x, pos2.y, p.z) + _shakeOffset;
+            //applying shake
+            transform.position = new Vector3(pos2.x, pos2.y, p.z);
         }
     }
 }
