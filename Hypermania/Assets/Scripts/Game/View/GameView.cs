@@ -90,7 +90,7 @@ namespace Game.View
             }
         }
 
-        public void Init(CharacterConfig[] characters)
+        public void Init(GlobalConfig config, CharacterConfig[] characters)
         {
             if (characters.Length != 2)
             {
@@ -117,7 +117,7 @@ namespace Game.View
                 _healthbars[i].SetMaxHealth((float)characters[i].Health);
                 _burstBars[i].SetMaxBurst((float)characters[i].BurstMax);
             }
-            _conductor.Init();
+            _conductor.Init(config.Audio);
             _sfx = new HashSet<SfxEvent>();
             _rollbackStart = Frame.NullFrame;
         }
