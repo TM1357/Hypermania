@@ -1,3 +1,4 @@
+using System;
 using Game;
 using UnityEngine;
 using Utils.EnumArray;
@@ -5,6 +6,14 @@ using Utils.SoftFloat;
 
 namespace Design.Configs
 {
+    [Serializable]
+    public struct InputConfig
+    {
+        public int DashWindow;
+        public int SuperJumpWindow;
+        public int InputBufferWindow;
+    }
+
     [CreateAssetMenu(menuName = "Hypermania/Global Config")]
     public class GlobalConfig : ScriptableObject
     {
@@ -18,14 +27,16 @@ namespace Design.Configs
         public int BackDashCancelAfterTicks = 6;
         public int BackDashTicks = 15;
         public int BackAirDashTicks = 15;
-
         public sfloat RunningSpeedMultiplier = 2;
         public int RoundTimeTicks = 10800;
 
         [SerializeField]
-        private AudioConfig AudioConfig;
+        private InputConfig _inputConfig;
+        public InputConfig Input => _inputConfig;
 
-        public AudioConfig Audio => AudioConfig;
+        [SerializeField]
+        private AudioConfig _audioConfig;
+        public AudioConfig Audio => _audioConfig;
 
         [SerializeField]
         private EnumArray<Character, CharacterConfig> _configs;

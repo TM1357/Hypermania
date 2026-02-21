@@ -52,6 +52,12 @@ namespace Game.Sim
             || State == CharacterState.SuperAerial
             || State == CharacterState.SpecialAerial;
 
+        public bool IsDash =>
+            State == CharacterState.BackAirDash
+            || State == CharacterState.ForwardAirDash
+            || State == CharacterState.ForwardDash
+            || State == CharacterState.BackDash;
+
         public bool Actionable =>
             State == CharacterState.Idle
             || State == CharacterState.Walk
@@ -107,7 +113,7 @@ namespace Game.Sim
             FacingDir = facingDirection;
         }
 
-        public void DoFrameStart()
+        public void DoFrameStart(GlobalConfig config)
         {
             if (Actionable)
             {
@@ -115,6 +121,10 @@ namespace Game.Sim
             }
             HitLocation = SVector2.zero;
             HitProps = new BoxProps();
+            if (Location(config) == FighterLocation.Grounded)
+            {
+                AirDashCount = 0;
+            }
         }
 
         public FighterLocation Location(GlobalConfig config)
@@ -148,6 +158,11 @@ namespace Game.Sim
             // if animation ends, switch back to idle
             if (frame >= StateEnd)
             {
+                // TODO: is best place here?
+                if (IsDash)
+                {
+                    Velocity.x = 0;
+                }
                 State = CharacterState.Idle;
                 StateStart = frame;
                 StateEnd = Frame.Infinity;
@@ -162,40 +177,50 @@ namespace Game.Sim
             }
             if (Location(config) == FighterLocation.Grounded)
             {
-                // this prevents jumping after dashing preserving momentum
                 Velocity.x = 0;
 
-                if (InputH.IsHeld(ForwardInput) && InputH.PressedAndReleasedRecently(ForwardInput, 12, 1))
+                if (
+                    InputH.IsHeld(ForwardInput)
+                    && InputH.PressedAndReleasedRecently(ForwardInput, config.Input.DashWindow, 1)
+                )
                 {
                     State = CharacterState.ForwardDash;
                     StateEnd = frame + config.ForwardDashTicks;
                     StateStart = frame;
-                    Velocity.x += ForwardVector.x * (characterConfig.ForwardDashDistance / config.ForwardDashTicks);
+                    Velocity.x = ForwardVector.x * (characterConfig.ForwardDashDistance / config.ForwardDashTicks);
                     return;
                 }
 
-                if (InputH.IsHeld(BackwardInput) && InputH.PressedAndReleasedRecently(BackwardInput, 12, 1))
+                if (
+                    InputH.IsHeld(BackwardInput)
+                    && InputH.PressedAndReleasedRecently(BackwardInput, config.Input.DashWindow, 1)
+                )
                 {
                     State = CharacterState.BackDash;
                     StateEnd = frame + config.BackDashTicks;
                     StateStart = frame;
-                    Velocity.x += BackwardVector.x * characterConfig.BackDashDistance / config.BackDashTicks;
+                    Velocity.x = BackwardVector.x * characterConfig.BackDashDistance / config.BackDashTicks;
                     return;
                 }
 
-                sfloat runMult = State == CharacterState.Running ? config.RunningSpeedMultiplier : sfloat.One;
+                // prevent jump from taking run multiplier
+                sfloat runMult =
+                    State == CharacterState.Running && !InputH.IsHeld(InputFlags.Up)
+                        ? config.RunningSpeedMultiplier
+                        : sfloat.One;
+
                 if (InputH.IsHeld(ForwardInput))
                 {
-                    Velocity.x += ForwardVector.x * characterConfig.Speed * runMult;
+                    Velocity.x += ForwardVector.x * characterConfig.ForwardSpeed * runMult;
                 }
                 if (InputH.IsHeld(BackwardInput))
                 {
-                    Velocity.x += BackwardVector.x * characterConfig.Speed * runMult;
+                    Velocity.x += BackwardVector.x * characterConfig.BackSpeed;
                 }
 
                 if (InputH.IsHeld(InputFlags.Up))
                 {
-                    if (InputH.PressedRecently(InputFlags.Down, 8))
+                    if (InputH.PressedRecently(InputFlags.Down, config.Input.SuperJumpWindow))
                     {
                         Velocity.y = (sfloat)1.25 * characterConfig.JumpVelocity;
                     }
@@ -209,7 +234,7 @@ namespace Game.Sim
             {
                 if (
                     InputH.IsHeld(ForwardInput)
-                    && InputH.PressedAndReleasedRecently(ForwardInput, 12, 1)
+                    && InputH.PressedAndReleasedRecently(ForwardInput, config.Input.DashWindow, 1)
                     && AirDashCount < characterConfig.NumAirDashes
                 )
                 {
@@ -217,14 +242,15 @@ namespace Game.Sim
                     State = CharacterState.ForwardAirDash;
                     StateEnd = frame + config.ForwardAirDashTicks;
                     StateStart = frame;
-                    Velocity.x +=
+                    Velocity.x =
                         ForwardVector.x * (characterConfig.ForwardAirDashDistance / config.ForwardAirDashTicks);
+                    Velocity.y = 0;
                     return;
                 }
 
                 if (
                     InputH.IsHeld(BackwardInput)
-                    && InputH.PressedAndReleasedRecently(BackwardInput, 12, 1)
+                    && InputH.PressedAndReleasedRecently(BackwardInput, config.Input.DashWindow, 1)
                     && AirDashCount < characterConfig.NumAirDashes
                 )
                 {
@@ -232,7 +258,8 @@ namespace Game.Sim
                     State = CharacterState.BackAirDash;
                     StateEnd = frame + config.BackAirDashTicks;
                     StateStart = frame;
-                    Velocity.x += BackwardVector.x * (characterConfig.BackAirDashDistance / config.BackAirDashTicks);
+                    Velocity.x = BackwardVector.x * (characterConfig.BackAirDashDistance / config.BackAirDashTicks);
+                    Velocity.y = 0;
                     return;
                 }
             }
@@ -240,10 +267,6 @@ namespace Game.Sim
 
         public void ApplyActiveState(Frame frame, CharacterConfig characterConfig, GlobalConfig config)
         {
-            if (Location(config) == FighterLocation.Grounded)
-            {
-                AirDashCount = 0;
-            }
             if (State == CharacterState.Hit)
             {
                 if (InputH.IsHeld(InputFlags.Burst))
@@ -265,7 +288,7 @@ namespace Game.Sim
                 return;
             }
 
-            if (InputH.PressedRecently(InputFlags.LightAttack, 8))
+            if (InputH.PressedRecently(InputFlags.LightAttack, config.Input.InputBufferWindow))
             {
                 switch (Location(config))
                 {
@@ -286,7 +309,7 @@ namespace Game.Sim
                         break;
                 }
             }
-            else if (InputH.PressedRecently(InputFlags.MediumAttack, 8))
+            else if (InputH.PressedRecently(InputFlags.MediumAttack, config.Input.InputBufferWindow))
             {
                 switch (Location(config))
                 {
@@ -300,7 +323,7 @@ namespace Game.Sim
                         break;
                 }
             }
-            else if (InputH.PressedRecently(InputFlags.HeavyAttack, 8))
+            else if (InputH.PressedRecently(InputFlags.HeavyAttack, config.Input.InputBufferWindow))
             {
                 switch (Location(config))
                 {
@@ -324,14 +347,18 @@ namespace Game.Sim
 
         public void UpdatePosition(GlobalConfig config)
         {
-            // Apply gravity if not grounded
-            if (Position.y > config.GroundY || Velocity.y > 0)
+            // Apply gravity if not grounded and not in airdash
+            if (
+                State != CharacterState.BackAirDash
+                && State != CharacterState.ForwardAirDash
+                && Position.y > config.GroundY
+            )
             {
-                Velocity.y += config.Gravity * 1 / 64;
+                Velocity.y += config.Gravity * 1 / GameManager.TPS;
             }
 
             // Update Position
-            Position += Velocity * 1 / 64;
+            Position += Velocity * 1 / GameManager.TPS;
 
             // Floor collision
             if (Position.y <= config.GroundY)

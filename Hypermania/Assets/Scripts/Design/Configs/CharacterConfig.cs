@@ -14,7 +14,8 @@ namespace Design.Configs
         public FighterView Prefab;
         public AnimatorOverrideController AnimationController;
         public sfloat CharacterHeight;
-        public sfloat Speed;
+        public sfloat ForwardSpeed;
+        public sfloat BackSpeed;
         public sfloat JumpVelocity;
         public sfloat Health;
         public sfloat BurstMax;

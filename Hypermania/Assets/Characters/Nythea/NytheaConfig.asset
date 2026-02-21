@@ -17,8 +17,10 @@ MonoBehaviour:
   AnimationController: {fileID: 22100000, guid: b2247d1bd644d04a3a78e3aa68904cb8, type: 2}
   CharacterHeight:
     rawValue: 1071225242
-  Speed:
+  ForwardSpeed:
     rawValue: 1075838976
+  BackSpeed:
+    rawValue: 1069547520
   JumpVelocity:
     rawValue: 1088421888
   Health:
